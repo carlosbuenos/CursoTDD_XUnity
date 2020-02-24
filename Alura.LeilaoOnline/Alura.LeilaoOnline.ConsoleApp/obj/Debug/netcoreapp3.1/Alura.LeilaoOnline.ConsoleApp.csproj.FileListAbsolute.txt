@@ -1,0 +1,11 @@
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.exe
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.deps.json
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.runtimeconfig.json
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.runtimeconfig.dev.json
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.dll
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\bin\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.pdb
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\obj\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.csprojAssemblyReference.cache
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\obj\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.AssemblyInfoInputs.cache
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\obj\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.AssemblyInfo.cs
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\obj\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.dll
+C:\Users\Carlos\source\repos\AluraTDD\Alura.LeilaoOnline\Alura.LeilaoOnline.ConsoleApp\obj\Debug\netcoreapp3.1\Alura.LeilaoOnline.ConsoleApp.pdb
