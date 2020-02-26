@@ -1,32 +1,62 @@
-﻿using Alura.LeilaoOnline.Core.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
+using Alura.LeilaoOnline.Core;
+using System.Linq;
 
 namespace Alura.LeilaoOnline.Tests
 {
-	public class LeilaoRecebeOferta
-	{
-		[Fact]
-		public void IgnoraNovoLancaDadoPregaoFinalizado() {
-			var leilao = new Leilao("Quadro Alejadinho");
-			var fulano = new Interessada("Fulano", leilao);
-			var ciclano = new Interessada("Ciclano", leilao);
+    public class LeilaoRecebeOferta
+    {
+        [Fact]
+        public void NaoAceitaProximoLanceDadoMesmoClienteRealizouUltimoLance()
+        {
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
+            var fulano = new Interessada("Fulano", leilao);
+            leilao.IniciaPregao();
+            leilao.RecebeLance(fulano, 800);
+            
+            //Act - método sob teste
+            leilao.RecebeLance(fulano, 1000);
 
+            //Assert
+            var qtdeEsperada = 1;
+            var qtdeObtida = leilao.Lances.Count();
+            Assert.Equal(qtdeEsperada, qtdeObtida);
+        }
 
-			leilao.RecebeLance(fulano, 100);
-			leilao.RecebeLance(ciclano, 300);
-			leilao.RecebeLance(ciclano, 600);
-			
+        [Theory]
+        [InlineData(4, new double[] { 1000, 1200, 1400, 1300 })]
+        [InlineData(2, new double[] { 800, 900 })]
+        public void NaoPermiteNovosLancesDadoLeilaoFinalizado(
+            int qtdeEsperada, double[] ofertas)
+        {
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
+            var fulano = new Interessada("Fulano", leilao);
+            var maria = new Interessada("Maria", leilao);
+            leilao.IniciaPregao();
+            for (int i = 0; i < ofertas.Length; i++)
+            {
+                var valor = ofertas[i];
+                if ((i%2)==0)
+                {
+                    leilao.RecebeLance(fulano, valor);
+                }
+                else
+                {
+                    leilao.RecebeLance(maria, valor);
+                }
+            }
+            leilao.TerminaPregao();
 
-			leilao.TerminaPregao();
+            //Act - método sob teste
+            leilao.RecebeLance(fulano, 1000);
 
-			leilao.RecebeLance(fulano, 800);
-
-			var valorEsperado = 800;
-			var valorRecebido = leilao.Ganhador.Valor;
-			Assert.Equal(valorEsperado, valorRecebido);
-		}
-	}
+            //Assert
+            var qtdeObtida = leilao.Lances.Count();
+            Assert.Equal(qtdeEsperada, qtdeObtida);
+        }
+    }
 }

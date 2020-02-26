@@ -1,84 +1,113 @@
-﻿using Alura.LeilaoOnline.Core.Entidades;
+﻿using Alura.LeilaoOnline.Core;
 using Xunit;
 
 namespace Alura.LeilaoOnline.Tests
 {
+    public class LeilaoTerminaPregao
+    {
+        [Theory]
+        [InlineData(1200, 1250, new double[] { 800, 1150, 1400, 1250 })]
+        public void RetornaValorSuperiorMaisProximoDadoLeilaoNessaModalidade(
+            double valorDestino,
+            double valorEsperado,
+            double[] ofertas)
+        {
+            //Arranje
+            IModalidadeAvaliacao modalidade = 
+                new OfertaSuperiorMaisProxima(valorDestino);
+            var leilao = new Leilao("Van Gogh", modalidade);
+            var fulano = new Interessada("Fulano", leilao);
+            var maria = new Interessada("Maria", leilao);
 
-	public class LeilaoTerminaPregao
-	{
-		[Fact]
-		public void LeilaoComVariosLances()
-		{
-			var leilao = new Leilao("Quadro Alejadinho");
-			var fulano = new Interessada("Fulano", leilao);
-			var ciclano = new Interessada("Ciclano", leilao);
+            leilao.IniciaPregao();
+            for (int i = 0; i < ofertas.Length; i++)
+            {
+                if ((i % 2 == 0))
+                {
+                    leilao.RecebeLance(fulano, ofertas[i]);
+                } else
+                {
+                    leilao.RecebeLance(maria, ofertas[i]);
+                }
+            }
 
+            //Act
+            leilao.TerminaPregao();
 
-			leilao.RecebeLance(fulano, 100);
-			leilao.RecebeLance(ciclano, 300);
-			leilao.RecebeLance(ciclano, 600);
-			leilao.RecebeLance(fulano, 500);
+            //Assert
+            Assert.Equal(valorEsperado, leilao.Ganhador.Valor);
 
-			leilao.TerminaPregao();
-			var valorEsperado = 600;
-			var valorRecebido = leilao.Ganhador.Valor;
-			Assert.Equal(valorEsperado, valorRecebido);
+        }
 
-		}
+        [Theory]
+        [InlineData(1200, new double[] { 800, 900, 1000, 1200 })]
+        [InlineData(1000, new double[] { 800, 900, 1000, 990 })]
+        [InlineData(800, new double[] { 800 })]
+        public void RetornaMaiorValorDadoLeilaoComPeloMenosUmLance(
+            double valorEsperado, 
+            double[] ofertas)
+        {
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
+            var fulano = new Interessada("Fulano", leilao);
+            var maria = new Interessada("Maria", leilao);
+            leilao.IniciaPregao();
+            for (int i = 0; i < ofertas.Length; i++)
+            {
+                var valor = ofertas[i];
+                if ((i % 2) == 0)
+                {
+                    leilao.RecebeLance(fulano, valor);
+                }
+                else
+                {
+                    leilao.RecebeLance(maria, valor);
+                }
+            }
 
-		[Fact]
-		public void LeilaoComUmLance()
-		{
-			var leilao = new Leilao("Quadro Alejadinho");
-			var fulano = new Interessada("Fulano", leilao);
-			var ciclano = new Interessada("Ciclano", leilao);
+            //Act - método sob teste
+            leilao.TerminaPregao();
 
+            //Assert
+            var valorObtido = leilao.Ganhador.Valor;
+            Assert.Equal(valorEsperado, valorObtido);
 
-			leilao.RecebeLance(fulano, 100);
+        }
 
-			leilao.TerminaPregao();
-			var valorEsperado = 100;
-			var valorRecebido = leilao.Ganhador.Valor;
-			Assert.Equal(valorEsperado, valorRecebido);
-		}
+        [Fact]
+        public void LancaInvalidOperationExceptionDadoPregaoNaoIniciado()
+        {
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
+            
+            //Assert
+            var excecaoObtida = Assert.Throws<System.InvalidOperationException>(
+                //Act - método sob teste
+                () => leilao.TerminaPregao()
+            );
 
-		[Fact]
-		public void RetornaMaiorValorZeroDadoLeilaoSemLance()
-		{
-			#region Arrajnje
-			var leilao = new Leilao("Quadro Alejadinho");
+            var msgEsperada = "Não é possível terminar o pregão sem que ele tenha começado. Para isso, utilize o método IniciaPregao().";
+            Assert.Equal(msgEsperada, excecaoObtida.Message);
+        }
 
-			#endregion
+        [Fact]
+        public void RetornaZeroDadoLeilaoSemLances()
+        {
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
+            leilao.IniciaPregao();
 
-			#region Act
-			leilao.TerminaPregao();
-			#endregion
+            //Act - método sob teste
+            leilao.TerminaPregao();
 
-			#region Assert
-			var valorEsperado = 0;
-			var valorRecebido = leilao.Ganhador.Valor;
-			Assert.Equal(valorEsperado, valorRecebido);
-			#endregion
-		}
+            //Assert
+            var valorEsperado = 0;
+            var valorObtido = leilao.Ganhador.Valor;
 
-		[Theory]
-		[InlineData(400,new double[] { 100, 200, 300, 400 })]
-		[InlineData(400,new double[] { 100, 200, 400, 300 })]
-		[InlineData(100,new double[] { 100 })]
-		public void RetornaMaiorValorDadoLeilaoComPeloMenosUmLance(double valorEsperado,double[] ofertas)
-		{
-			var leilao = new Leilao("Quadro Alejadinho");
-			var fulano = new Interessada("Fulano", leilao);
-
-			foreach (var oferta in ofertas)
-			{
-				leilao.RecebeLance(fulano, oferta);
-			}
-			
-
-			leilao.TerminaPregao();
-			var valorRecebido = leilao.Ganhador.Valor;
-			Assert.Equal(valorEsperado, valorRecebido);
-		}
-	}
+            Assert.Equal(valorEsperado, valorObtido);
+        }
+    }
 }
